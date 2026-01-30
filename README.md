@@ -1,142 +1,93 @@
-# AgriStack J&K – Governance & Verification Workbench
+# AgriStack J&K: Integrated Policy Implementation System
+### *Possession-Anchored, Welfare-Enabled Digital Public Infrastructure (DPI)*
 
-## Overview
+![Status](https://img.shields.io/badge/Status-Prototype_v18.0-blue) ![Context](https://img.shields.io/badge/Event-Harvard_Policy_Hackathon-maroon) ![Tech](https://img.shields.io/badge/Built_With-Streamlit_|_Python-green)
 
-This repository contains the **Human-in-the-Loop Governance Workbench** developed for the **AgriStack Jammu & Kashmir: Possession-Anchored, Welfare-Enabled DPI Framework**.
+## **1. Executive Summary**
+This software serves as the **Digital Public Infrastructure (DPI)** for the *AgriStack J&K Policy Framework v2.0*. It automates the verification of legacy land records (*Jamabandis*), transitioning them from static paper documents to a dynamic, credit-ready digital registry.
 
-The application is a **Streamlit-based prototype** that demonstrates the end-to-end workflow for transforming legacy land records into a **confidence-graded digital registry** for welfare and agricultural service delivery.
+By decoupling "Service Eligibility" from "Legal Title Finality," this system allows immediate welfare delivery to active cultivators while long-term legal disputes are resolved in the background.
 
-It operationalizes the policy principle that:
-
-**Service Delivery Eligibility can be determined using verified possession and confidence scoring — without waiting for legal title finality.**
-
----
-
-## What This Prototype Demonstrates
-
-This workbench simulates how scanned legacy records move through a **digitization → verification → governance scoring → registry output** pipeline.
-
-### Key Functional Components
-
-**1. Human-in-the-Loop Digitisation Interface**
-A split-screen workflow simulates how operators validate AI-suggested transliterations of legacy Urdu/Shikasta land records before structured data entry.
-
-**2. Governance Engine (Confidence Scoring System)**
-Implements the **Risk Verification Matrix** described in the policy.
-Each record is assigned a **Trust Score (0.0–1.0)** and routed into one of four governance channels:
-
-* **Green** – Verified, eligible for full welfare & credit linkage
-* **Grey** – Inheritance (Varasat) cases deemed verified with time-bound grace
-* **Amber** – Provisional, welfare allowed but subject to review
-* **Red** – Blocked due to identity failure or ineligible land category
-
-**3. Possession-Anchored Identity Logic**
-Implements rules such as:
-
-* Custodian / Evacuee land handling (CRC pathway)
-* Varasat (inheritance) exemption logic
-* Distinction between **Gair Mumkin Makan (allowed)** and **Gair Mumkin Sarak (blocked)**
-
-**4. Offline-Resilient Provisional Farmer ID Generation**
-Farmer IDs are generated using **SHA-256 hashing** that includes device and village context to prevent duplication in low-connectivity environments.
-
-**5. Audit Trace Transparency**
-Every scoring decision includes a human-readable audit trail explaining why penalties or routing decisions occurred.
+### **⚠️ Project Scope & Limitations**
+> **"This prototype focuses on the 'Land Governance & Registration' layer of AgriStack (cleaning the RoR, generating FIDs, and validating statutory compliance). It simulates the GIS Integrity Check but leaves the detailed Farmer Registration Process (e-KYC) and Seasonal Crop Survey module for a future 'Field App' integration."**
 
 ---
 
-## Input Data Files
+## **2. Key Functional Modules**
 
-The prototype works with two types of datasets:
+The application is divided into two distinct operational phases:
 
-### 1. Original Legacy Dataset
+### **Phase 1: Human-in-the-Loop Digitization Workbench**
+* **Problem:** Legacy records are in *Shikasta* (cursive) Urdu and often illegible.
+* **Solution:** A split-screen interface where **AI-Simulated OCR** extracts raw data, and a Village Data Volunteer (VDV) verifies/edits the entries against the original PDF scan.
+* **Tech:** Uses `Tesseract` (or Mock Engine for demo stability) to digitize columns like *Khevat*, *Owner Name*, and *Land Type*.
 
-Raw digitised Jamabandi-style land record data (pre-transliteration).
-
-### 2. Transliterated Dataset
-
-**File name:** `Transliterated Data Updated.csv`
-This dataset contains structured, transliterated fields derived from legacy Urdu records and is used to demonstrate the governance scoring and verification workflow.
-
----
-
-## System Requirements
-
-You need **Python 3.9+** and the following libraries:
-
-* streamlit
-* pandas
-* numpy
-* easyocr
-* opencv-python-headless (or opencv-python)
-* Pillow
+### **Phase 2: Governance & GIS Engine**
+This is the algorithmic core that processes the digitized data:
+1.  **Forensic Audit Logic:** Implements the **Risk Verification Matrix** to assign Trust Scores (0.0–1.0).
+2.  **GIS Plot Integrity (New):** Simulates a real-time geofence check. It validates if the VDV's physical location matches the plot's official coordinates (blocking 'Ghost Surveys').
+3.  **Governance Channels:**
+    * 🟢 **Green:** Verified, eligible for full KCC (Kisan Credit Card).
+    * ⚪ **Grey:** Inheritance (*Varasat*) cases deemed verified with a 24-month amnesty.
+    * 🟡 **Amber:** Provisional; welfare allowed (CRC) but subject to review (e.g., Custodian Land).
+    * 🔴 **Red:** Blocked due to identity failure, encroachment (*Sarak/Nallah*), or GIS mismatch.
 
 ---
 
-## Installation
+## **3. Policy Alignment Matrix**
 
-1. Clone or download this repository
-2. Install dependencies:
-
-pip install streamlit pandas easyocr numpy opencv-python-headless Pillow
-
----
-
-## Running the Application
-
-Launch the Streamlit app:
-
-streamlit run agristack_app_v9.py
-
-The app will open automatically in your browser at:
-
-[http://localhost:8501](http://localhost:8501)
+| Code Feature | Policy Principle Implemented |
+| :--- | :--- |
+| **Generates 'JK-HASH'** | **Sec 2.1.1:** Offline-Resilient Identity (No dependency on live Aadhaar API). |
+| **Fuzzy Matching** | **Sec 3.1.A:** Handles spelling variations between Urdu and English IDs. |
+| **GIS Module** | **Sec 4.2:** Plot Integrity; Ensures VDV physically visited the field. |
+| **Grey Channel** | **Sec 3.2:** Amnesty for *Varasat* (Inheritance) pending mutations. |
+| **Amber Channel** | **Table 3.1:** Financial inclusion for *Custodian/Evacuee* land occupants. |
 
 ---
 
-## How to Use the Prototype
+## **4. Installation & Setup**
 
-1. Start the application
-2. Upload the **transliterated dataset** (`Transliterated Data Updated.csv`) when prompted
-3. Click **“Execute v2.0 Protocol”**
-4. View:
+### **Prerequisites**
+* Python 3.9+
+* (Optional but recommended) Poppler installed for PDF processing.
 
-   * Governance channel distribution (Green/Grey/Amber/Red)
-   * Trust Scores for each record
-   * Automated audit trace explaining each decision
-5. Download the processed **Provisional Registry Output CSV**
+### **Step 1: Install Dependencies**
+    pip install streamlit pandas numpy fpdf pdf2image pytesseract
 
----
+### **Step 2: Generate Demo Artifacts**
+Run the generator script to create the "Transliterated Jamabandi" PDF for the Phase 1 demo:
 
-## Policy Alignment
+    python create_demo_pdf.py
 
-This prototype implements the core features of the **AgriStack J&K Policy Framework**, including:
+*This creates `Jamabandi_Demo_English.pdf` in your folder.*
 
-* Possession-Anchored Registry Model
-* Confidence-Graded Governance Channels
-* Custodian / Evacuee Land Inclusion Pathway
-* Varasat (Inheritance) Grey Channel Logic
-* Human-in-the-Loop AI Transliteration Validation
-* Legal Safe Harbor: Registry is **not a title document**
+### **Step 3: Launch the Application**
+    streamlit run agristack_app_v9.py
+
+The application will open in your browser at `http://localhost:8501`.
 
 ---
 
-## Prototype vs Production System
+## **5. How to Run the Demo (Walkthrough)**
 
-This repository demonstrates **policy-to-algorithm translation** and governance logic.
+1.  **Phase 1 (Digitization):**
+    * Go to the **"Phase 1"** tab.
+    * Upload `Jamabandi_Demo_English.pdf`.
+    * Click **"Initiate OCR"**.
+    * *Narrative:* "The system digitizes the record. As a VDV, I verify the data." (Download the CSV).
 
-In a production deployment:
+2.  **Phase 2 (Governance):**
+    * Go to the **"Phase 2"** tab.
+    * Upload the CSV you just downloaded (or use the provided `Simulated_Jamabandi_Output.csv`).
+    * Click **"Execute Governance Protocol"**.
 
-* OCR/transliteration would be powered by **Bhashini AI models specialized for Shikasta Urdu**
-* Records would be stored in a **secure government database with immutable audit logs**
-* APIs would expose verified records to **banks, insurers, and welfare platforms**
-* Role-based access control (VDV, Block Officer, Revenue Officer) would be enforced
+3.  **The Result:**
+    * Show the **Governance Channels** (Green/Grey/Amber/Red).
+    * Show the **GIS Map Widget** (Point out the "Blue Dots" vs the "Red Flag" on Khasra 2501).
+    * Explain the **Audit Trace** for a blocked farmer.
 
 ---
 
-## Disclaimer
-
-This is a **policy demonstration prototype** created for the Harvard Kennedy School Policy Hackathon.
-
-It simulates governance logic and system architecture for welfare-linked agricultural digitization.
-It does **not** create or modify official land ownership records and must not be used for legal title determination.
+## **6. Disclaimer**
+This is a policy demonstration prototype created for the **Harvard Kennedy School Policy Hackathon**. It simulates governance logic and system architecture for welfare-linked agricultural digitization. It does **not** create or modify official land ownership records and must not be used for legal title determination.
