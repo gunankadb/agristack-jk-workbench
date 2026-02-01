@@ -26,7 +26,7 @@ st.set_page_config(
 def generate_strong_fid(name, village_code, device_id="TAB-09"):
     """Offline-Resilient Farmer ID Generation (Section 2.1.1)"""
     timestamp = str(int(time.time()))
-    raw_string = f"{str(name).strip().upper()}|{village_code}|{device_id}|{timestamp}"
+    raw_string = f"{str(name).strip().upper()}|{village_code}|{device_id}"
     return f"JK-{hashlib.sha256(raw_string.encode()).hexdigest()[:10].upper()}"
 
 def simulate_gis_integrity_check(khasra_no):
